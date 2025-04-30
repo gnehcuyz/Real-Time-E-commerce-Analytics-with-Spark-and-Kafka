@@ -26,22 +26,14 @@ We mainly use the `events.csv` file to simulate real-time user activities. Each 
 These events are streamed into Kafka topics to mimic real-time behavior and are then processed using PySpark for analytics and dashboarding.
 
 
-[//]: # (## Tech Stack)
-
-[//]: # ()
-[//]: # (- Apache Kafka – Real-time message streaming)
-
-[//]: # (- Apache Zookeeper – Kafka coordination)
-
-[//]: # (- PySpark Structured Streaming – Real-time processing)
-
-[//]: # (- Docker Compose – Local Kafka/Zookeeper setup)
-
-[//]: # (- Python – Kafka producer to simulate e-commerce events)
-
-[//]: # (- Postgres – Data sink)
-
-[//]: # (- Apache Superset – BI Dashboard)
+## Tech Stack
+- Python
+- Docker Compose – Runs all services locally in isolated, reproducible environments.
+- PostgreSQL – Stores cleaned event data for querying and long-term analysis.
+- Apache Kafka – Streams user activity events between components in real time.
+- Apache ZooKeeper – Manages Kafka broker coordination and system metadata.
+- Apache Spark Structured Streaming – Processes and transforms streaming data on the fly.
+- Apache Superset – Visualizes processed data through real-time interactive dashboards.
 
 [//]: # ()
 [//]: # (## Project Structure)

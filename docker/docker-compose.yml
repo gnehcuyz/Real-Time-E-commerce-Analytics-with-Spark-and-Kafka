@@ -21,10 +21,29 @@ services:
 
   postgres:
     image: postgres:15
-    restart: always
     ports:
       - "5433:5432"
     environment:
       POSTGRES_USER: ecommerce
       POSTGRES_PASSWORD: ecommerce
       POSTGRES_DB: ecommerce
+    volumes:
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d
+
+  superset:
+    image: apache/superset
+    container_name: superset
+    ports:
+      - "8088:8088"
+    environment:
+      SUPERSET_SECRET_KEY: ${SUPERSET_SECRET_KEY}
+      SUPERSET_LOAD_EXAMPLES: "no"
+    volumes:
+      - superset_home:/app/superset_home
+    depends_on:
+      - postgres
+    restart: always
+
+volumes:
+    superset_home:
+
