@@ -2,6 +2,7 @@ import pandas as pd
 from kafka import KafkaProducer
 import json
 import time
+from tqdm import tqdm
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -51,9 +52,9 @@ class EventProducer:
         :param delay: Delay in seconds between sending each event (default is 0.1).
         """
         df = pd.read_csv(path)
-        for _, row in df.head(limit).iterrows():
+        for _, row in tqdm(df.head(500).iterrows(), total=500, desc="Sending events"):
             event = self.format_event(row)
             self.producer.send(self.topic, event)
-            print(f"Sent: {event}")
+            # print(f"Sent: {event}")
             time.sleep(delay)
         self.producer.flush()
