@@ -43,7 +43,7 @@ class EventProducer:
             "transactionid": row.get("transactionid", None)
         }
 
-    def send_events(self, path=CSV_PATH, limit=5, delay=0.1):
+    def send_events(self, path=CSV_PATH, limit=500, delay=0.1):
         """
         Reads events from a CSV file and sends them to the Kafka topic.
 
@@ -52,7 +52,7 @@ class EventProducer:
         :param delay: Delay in seconds between sending each event (default is 0.1).
         """
         df = pd.read_csv(path)
-        for _, row in tqdm(df.head(500).iterrows(), total=500, desc="Sending events"):
+        for _, row in tqdm(df.head(limit).iterrows(), total=limit, desc="Sending events"):
             event = self.format_event(row)
             self.producer.send(self.topic, event)
             # print(f"Sent: {event}")
