@@ -1,0 +1,24 @@
+/data/
+
+*.csv
+*.zip
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# VSCode / PyCharm / JetBrains settings
+.vscode/
+.idea/
+
+# Environment files
+.env
+*.env
+*.log
+
+# Jupyter logs
+*.log
+
