@@ -43,7 +43,7 @@ class EventProducer:
             "transactionid": row.get("transactionid", None)
         }
 
-    def send_events(self, path=CSV_PATH, limit=500, delay=0.1):
+    def send_events(self, path=CSV_PATH, limit=10000, delay=0.1):
         """
         Reads events from a CSV file and sends them to the Kafka topic.
 
