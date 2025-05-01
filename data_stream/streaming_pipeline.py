@@ -35,8 +35,9 @@ def run_streaming_pipeline():
     query = transformed_df.writeStream \
         .foreachBatch(log_batch_to_postgres) \
         .option("startingOffsets", "latest") \
+        .option("failOnDataLoss", "false") \
         .option("checkpointLocation", CHECKPOINT_LOCATION) \
-        .trigger(processingTime="5 seconds") \
+        .trigger(processingTime="30 seconds") \
         .start()
 
     query.awaitTermination()

@@ -29,5 +29,6 @@ class KafkaStreamReader:
             .option("subscribe", self.topic)
             .option("startingOffsets", "latest")
             .option("checkpointLocation", CHECKPOINT_LOCATION)
+            .option("failOnDataLoss", "true")
             .load()
         )
