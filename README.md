@@ -35,44 +35,109 @@ These events are streamed into Kafka topics to mimic real-time behavior and are 
 - Apache Spark Structured Streaming – Processes and transforms streaming data on the fly.
 - Apache Superset – Visualizes processed data through real-time interactive dashboards.
 
-[//]: # ()
-[//]: # (## Project Structure)
+## Running Instructions
 
-[//]: # (```)
+### 1. Start Docker Services
 
-[//]: # (real-time-ecommerce-analytics/)
+From the root directory (where `docker-compose.yml` is):
 
-[//]: # (├── data_generator/               # Extract: Simulates user clickstream data)
+```bash
+docker compose build
+docker compose up -d
+```
 
-[//]: # (│   └── producer.py)
+This will start:
+- Kafka
+- Zookeeper
+- PostgreSQL
+- Superset
 
-[//]: # (├── spark_streaming/              # Transform: PySpark Structured Streaming jobs)
+---
 
-[//]: # (│   ├── streaming_job.py)
+### 2. Initialize Superset (first time only)
 
-[//]: # (│   └── transformations.py        )
+Upgrade the database schema (applies migrations)
+```bash
+docker exec -it <container_name> superset db upgrade
+```
+Create the first admin user:
+```bash
+docker exec -it <container_name> superset fab create-admin 
+```
+Initialize Superset
+```bash
+docker exec -it <container_name> superset init
+```
 
-[//]: # (├── data_sink/                    # Load: Output handling)
+Then visit: [http://localhost:8088](http://localhost:8088)
 
-[//]: # (│   └── write_to_postgres.py      )
+Log in with your credentials.
 
-[//]: # (├── docker/                       # Docker setup)
+---
 
-[//]: # (│   └── docker-compose.yml)
+### 3. Run the Kafka Producer (Simulate User Events)
+In a separate terminal, navigate to the `data_stream` directory:
+```bash
+python data_stream/main.py
+```
 
-[//]: # (├── config/                       # Kafka/Spark config &#40;topics, schema, env vars&#41;)
+---
 
-[//]: # (│   └── settings.json)
+### 4. Run the PySpark Streaming Job
 
-[//]: # (├── requirements.txt)
+In a separate terminal, navigate to the `data_stream` directory:
 
-[//]: # (├── .gitignore)
+```bash
+python data_stream/streaming_pipeline.py
+```
 
-[//]: # (└── README.md)
+This consumes events from Kafka and writes them into PostgreSQL.
 
-[//]: # (```)
+---
 
-[//]: # ()
+### 5. Connect Superset to PostgreSQL
+
+In Superset UI:
+
+1. Go to **Data** → **Databases** → **+ Database**
+2. Select **PostgreSQL**
+3. Fill in the credentials:
+
+```
+Host: host.docker.internal
+Port: 5433
+Database name: <your-DB-name>
+Username: <your-DB-username>
+Password: <your-DB-password>
+```
+
+Click **Connect**.
+
+---
+
+### 6. Create Dataset
+
+1. Go to **Datasets** → **+ Dataset**
+2. Select:
+
+- Database: `ecommerce`
+- Schema: `public`
+- Table: `events`
+
+Click **Add**.
+
+---
+
+### 7. Build Charts & Dashboards
+
+Example charts:
+
+- **Line chart**: Event volume over time (`COUNT(*)` on `timestamp`)
+- **Bar chart**: Top 10 items by `purchase` event count
+- **Pie chart**: Distribution of `event_type`
+
+---
+
 [//]: # (## How to Run)
 
 [//]: # ()
